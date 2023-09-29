@@ -27,8 +27,11 @@ class UserCredentials:
         button_frame = tk.Frame(self.root)
         button_frame.pack()
 
-        save_button = tk.Button(button_frame, text="Save", command=self.save_credentials)
-        save_button.pack(side=tk.LEFT)
+        save_button = tk.Button(button_frame, text="Save", command=self.save_credentials, width=10)
+        save_button.pack(side=tk.LEFT, padx=10, pady=11)
+        
+        exit_button = tk.Button(button_frame, text="Exit", command=self.root.quit, width=10)
+        exit_button.pack(side=tk.RIGHT, padx=2, pady=11)
 
     def save_credentials(self):
         with open(self.filename, 'a') as f:
@@ -39,7 +42,10 @@ class UserCredentials:
 def main():
     root = tk.Tk()
     app = UserCredentials(root)
+    root.title("User Credentials")
+    root.geometry("300x180")
+    root.resizable(False, False)
     root.mainloop()
-
+    
 if __name__ == "__main__":
     main()

@@ -2,6 +2,7 @@
 import tkinter as tk
 import string
 import random
+import pyperclip
 from tkinter import messagebox
 
 # Define the class for the password generator
@@ -47,6 +48,10 @@ class PasswordGenerator:
         # Create a button to generate the password
         self.generate_button = tk.Button(self.master, text="Generate Password", command=self.generate_password)
         self.generate_button.grid(row=7, column=0)
+        
+        # Create a button to copy the password to the clipboard
+        self.copy_button = tk.Button(self.master, text="Copy to Clipboard", command=self.copy_to_clipboard)
+        self.copy_button.grid(row=7, column=1)
 
         # Create an entry widget to display the password
         self.password_entry = tk.Entry(self.master, fg="blue")
@@ -121,6 +126,15 @@ class PasswordGenerator:
 
         # Disable the entry widget to prevent editing
         self.password_entry.config(state="readonly")
+        
+    # Define a method to copy the password to the clipboard
+    def copy_to_clipboard(self):
+        password = self.password_entry.get()
+        if password:
+            pyperclip.copy(password)
+            messagebox.showinfo("Info", "Password copied to clipboard!")
+        else:
+            messagebox.showerror("Error", "No password to copy!")
 
 
 def main():
