@@ -13,13 +13,19 @@ class PasswordGenerator:
         self.master = master
         self.master.title("Generator")
         self.master.resizable(False, False)
+        
+        # Configure the grid weights
+        self.master.grid_rowconfigure(0, weight=1)  # Top padding
+        self.master.grid_rowconfigure(2, weight=1)  # Bottom padding
+        self.master.grid_columnconfigure(0, weight=1)  # Left padding
+        self.master.grid_columnconfigure(2, weight=1)  # Right padding
 
         # Create a label for the length selection
         self.length_label = tk.Label(self.master, text="Select the length of the password (minimum length is 8):")
         self.length_label.grid(row=0, column=0, columnspan=2, sticky="W")
         
         # Create a scale widget for the length selection
-        self.length_scale = tk.Scale(self.master, from_=8, to=64, orient=tk.HORIZONTAL)
+        self.length_scale = tk.Scale(self.master, from_=8, to=64, orient=tk.HORIZONTAL, length=200)
         self.length_scale.grid(row=1, column=0, columnspan=2)
 
         # Create boolean variables for the character types
@@ -140,6 +146,7 @@ class PasswordGenerator:
 def main():
     root = tk.Tk()
     generator = PasswordGenerator(root)
+    root.geometry("400x280")
     root.mainloop()
 
 if __name__ == "__main__":
