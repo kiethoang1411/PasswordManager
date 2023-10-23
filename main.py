@@ -2,10 +2,10 @@
 import tkinter as tk
 
 # Import the other python files
-import gui_check_strongpass
-import gui_password_generator
-import gui_user_storage
-import gui_encryption
+import strongpass
+import password_generator
+import user_storage
+import encryption
 
 # Create a root window
 root = tk.Tk()
@@ -21,7 +21,7 @@ def open_password_generator():
     root.destroy()
     
     # Run the password generator file
-    gui_password_generator.main()
+    password_generator.main()
 
 # Define the function to open the password checker file
 def open_password_checker():
@@ -29,19 +29,19 @@ def open_password_checker():
     root.destroy()
     
     # Run the password checker file
-    gui_check_strongpass.main()
+    strongpass.main()
 
 # Define the function for User Storage button
-def user_storage():
+def user_vault():
     print("User Storage button clicked")
     root.destroy()
-    gui_user_storage.main()
+    user_storage.main()
 
 # Define the function for Encrypt/Decrypt File button
 def encrypt_decrypt_file():
     print("Encrypt/Decrypt File button clicked")
     root.destroy()
-    gui_encryption.main()
+    encryption.main()
 
 # Create a button for the password generator option
 generator_button = tk.Button(root, text="Password Generator", command=open_password_generator)
@@ -52,7 +52,7 @@ checker_button = tk.Button(root, text="Password Checker", command=open_password_
 checker_button.grid(row=1, column=1, padx=10, pady=10)
 
 # Create a button for User Storage option
-user_storage_button = tk.Button(root, text="User Storage", command=user_storage)
+user_storage_button = tk.Button(root, text="User Storage", command=user_vault)
 user_storage_button.grid(row=2, column=0, padx=10, pady=10)
 
 # Create a button for Encrypt/Decrypt File option
