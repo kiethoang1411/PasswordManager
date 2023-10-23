@@ -59,5 +59,5 @@ user_storage_button.grid(row=2, column=0, padx=10, pady=10)
 encrypt_decrypt_file_button = tk.Button(root, text="Encrypt/Decrypt File", command=encrypt_decrypt_file)
 encrypt_decrypt_file_button.grid(row=2, column=1, padx=10, pady=10)
 
-# Start the main loop of the root window
+# Start the GUI main loop
 root.mainloop()
