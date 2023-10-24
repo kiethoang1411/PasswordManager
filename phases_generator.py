@@ -1,85 +1,73 @@
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_OAEP
-from cryptography.fernet import Fernet
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.hazmat.backends import default_backend
-import base64
-import os
 import tkinter as tk
-from tkinter import filedialog, simpledialog
+import secrets
+import pyperclip
+from tkinter import messagebox  # Import the messagebox module
 
-class RSAEncryption:
-    def __init__(self, key_file='rsa_key.pem'):
-        self.key_file = key_file
-        self.password = simpledialog.askstring("Password", "Enter password:", show='*')
-        salt = b'\x00'*16  # Should be a random value in a real application
-        kdf = PBKDF2HMAC(algorithm=hashes.SHA256(), length=32, salt=salt, iterations=100000, backend=default_backend())
-        self.key = base64.urlsafe_b64encode(kdf.derive(self.password.encode()))
+class PassphraseGenerator:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Passphrase Generator")
 
-        try:
-            with open(self.key_file, 'rb') as f:
-                encrypted_key = f.read()
-            fernet = Fernet(self.key)
-            decrypted_key = fernet.decrypt(encrypted_key)
-            self.rsa_key = serialization.load_pem_private_key(decrypted_key, password=None, backend=default_backend())
-        except FileNotFoundError:
-            self.rsa_key = rsa.generate_private_key(public_exponent=65537, key_size=2048, backend=default_backend())
-            pem = self.rsa_key.private_bytes(encoding=serialization.Encoding.PEM,
-                                             format=serialization.PrivateFormat.PKCS8,
-                                             encryption_algorithm=serialization.NoEncryption())
-            fernet = Fernet(self.key)
-            encrypted_key = fernet.encrypt(pem)
-            with open(self.key_file, 'wb') as f:
-                f.write(encrypted_key)
+        # Create a main frame
+        self.main_frame = tk.Frame(self.master)
+        self.main_frame.pack(fill=tk.BOTH, expand=True)
 
-        self.cipher = PKCS1_OAEP.new(self.rsa_key)
+        # Centered "Number of words" label
+        self.word_count_label = tk.Label(self.main_frame, text="Number of words:")
+        self.word_count_label.grid(row=0, column=0, padx=(20, 5), pady=10, sticky=tk.W)
 
-    def encrypt_file(self, filename):
-        with open(filename, 'r') as f:
-            message = f.read()
-        encrypted_message = self.cipher.encrypt(message.encode())
-        destination = filedialog.asksaveasfilename(defaultextension='.enc')
-        with open(destination, 'w') as f:
-            f.write(base64.b64encode(encrypted_message).decode())
+        # Centered Spinbox
+        self.word_count_spinbox = tk.Spinbox(self.main_frame, from_=3, to=24, state="readonly")
+        self.word_count_spinbox.grid(row=0, column=1, padx=(5, 20), pady=10, sticky=tk.E)
 
-    def decrypt_file(self, filename):
-        with open(filename, 'r') as f:
-            encrypted_message = base64.b64decode(f.read().encode())
-        decrypted_message = self.cipher.decrypt(encrypted_message)
-        destination = filedialog.asksaveasfilename(defaultextension='.dec')
-        with open(destination, 'w') as f:
-            f.write(decrypted_message.decode())
+        # "Generate Passphrase" button
+        self.generate_button = tk.Button(self.main_frame, text="Generate Passphrase", command=self.generate_passphrase)
+        self.generate_button.grid(row=1, column=0, padx=(20, 5), pady=10, columnspan=1, sticky=tk.W)
 
-def user_interface():
-    rsa = RSAEncryption()
+        # "Copy to Clipboard" button
+        self.copy_button = tk.Button(self.main_frame, text="Copy to Clipboard", command=self.copy_to_clipboard)
+        self.copy_button.grid(row=1, column=1, padx=(5, 20), pady=10, columnspan=1, sticky=tk.E)
+
+        self.passphrase_var = tk.StringVar()
+        self.passphrase_var.set("")
+
+        self.passphrase_display = tk.Label(self.main_frame, textvariable=self.passphrase_var, wraplength=500)
+        self.passphrase_display.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
+
+        # Center the button
+        self.main_frame.grid_rowconfigure(1, weight=1)
+        self.main_frame.grid_columnconfigure(0, weight=1)
+        self.main_frame.grid_columnconfigure(1, weight=1)
+
+    def generate_passphrase(self):
+        word_count = int(self.word_count_spinbox.get())
+        with open('words_alpha.txt', 'r') as f:
+            words = [line.strip() for line in f]
+        passphrase = '-'.join(secrets.choice(words) for _ in range(word_count))
+        self.passphrase_var.set(passphrase)
+
+        # Calculate the width based on the length of the passphrase text
+        text_width = self.passphrase_display.winfo_reqwidth()
+
+        # Calculate the desired window width with some padding
+        window_width = text_width + 50
+
+        self.master.geometry(f"{window_width}x180")
+
+    def copy_to_clipboard(self):
+        # Copy the passphrase to the clipboard
+        passphrase = self.passphrase_var.get()
+        pyperclip.copy(passphrase)
+
+        # Show a pop-up message
+        messagebox.showinfo("Copied!", "Passphrase copied to clipboard!")
+
+def main():
     root = tk.Tk()
-    root.title("Encrypt File")  # Set the window title here
-    root.geometry("200x100")  # Set the window size here
-    root.resizable(False, False)  # Disable resizing
-
-    def choose_file():
-        filename = filedialog.askopenfilename()
-        return filename
-
-    def encrypt():
-        filename = choose_file()
-        rsa.encrypt_file(filename)
-
-    def decrypt():
-        filename = choose_file()
-        rsa.decrypt_file(filename)
-
-    encrypt_button = tk.Button(root, text="Encrypt a file", command=encrypt)
-    decrypt_button = tk.Button(root, text="Decrypt a file", command=decrypt)
-
-    encrypt_button.pack()
-    decrypt_button.pack()
-
+    app = PassphraseGenerator(root)
+    root.geometry("300x145")  # Set initial size
+    root.resizable(False, False)
     root.mainloop()
 
-# Run the user interface
-user_interface()
+if __name__ == "__main__":
+    main()

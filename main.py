@@ -4,6 +4,8 @@ import tkinter as tk
 # Import the other python files
 import strongpass
 import password_generator
+import phases_generator
+import checkleaked
 import user_storage
 import encryption
 
@@ -30,6 +32,20 @@ def open_password_checker():
     
     # Run the password checker file
     strongpass.main()
+    
+def open_phases_generator():
+    # Close the root window
+    root.destroy()
+    
+    # Run the password checker file
+    phases_generator.main()
+    
+def open_checkleaked():
+    # Close the root window
+    root.destroy()
+    
+    # Run the password check leaked
+    checkleaked.main()
 
 # Define the function for User Storage button
 def user_vault():
@@ -50,6 +66,14 @@ generator_button.grid(row=1, column=0, padx=10, pady=10)
 # Create a button for the password checker option
 checker_button = tk.Button(root, text="Password Checker", command=open_password_checker)
 checker_button.grid(row=1, column=1, padx=10, pady=10)
+
+# Create a button for the passphrase generator option
+phases_button = tk.Button(root, text="Passphrase Generator", command=open_phases_generator)
+phases_button.grid(row=1, column=2, padx=10, pady=10)
+
+# Create a button for the checkleaked option
+checkleaked_button = tk.Button(root, text="Check Leaked Password", command=open_checkleaked)
+checkleaked_button.grid(row=2, column=2, padx=10, pady=10)
 
 # Create a button for User Storage option
 user_storage_button = tk.Button(root, text="User Storage", command=user_vault)

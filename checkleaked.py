@@ -57,10 +57,13 @@ class PasswordChecker:
             self.result_label.config(text=result, fg="red")
 
 
-if __name__ == "__main__":
+def main():
     # Create the main window
     root = tk.Tk()
     app = PasswordChecker(root)
     root.geometry("300x180")
     root.resizable(False, False)
     root.mainloop()
+
+if __name__ == "__main__":
+    main()
