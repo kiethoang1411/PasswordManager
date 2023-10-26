@@ -117,9 +117,12 @@ class SecureRSA:
             )
         )
         destination = filedialog.asksaveasfilename(defaultextension='.enc')
-        with open(destination, 'wb') as f:
-            f.write(base64.b64encode(encrypted_message))
-
+        if destination:
+            with open(destination, 'wb') as f:
+                f.write(base64.b64encode(encrypted_message))
+            # Remove the original file after successful encryption
+            os.remove(filename) 
+            
     def decrypt_file(self, filename):
         if self.rsa_key is None:
             messagebox.showerror("Error", "RSA key is not set. Please generate or load a key before decrypting.")
@@ -142,7 +145,8 @@ class SecureRSA:
         if destination:  # Check if a file name was entered
             with open(destination, 'w') as f:
                 f.write(decrypted_message.decode())
-
+             # Remove the encrypted file after successful decryption
+            os.remove(filename) 
 
 
 def main():
