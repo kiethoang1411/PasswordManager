@@ -12,10 +12,11 @@ import encryption
 # Create a root window
 root = tk.Tk()
 root.title("Password Tool")
+root.resizable(False, False)
 
 # Create a label for the title
-title_label = tk.Label(root, text="Welcome to the Password Tool")
-title_label.grid(row=0, columnspan=2, padx=10, pady=10)
+title_label = tk.Label(root, text="Welcome to the Password Manager", fg="red", font=("Helvetica", 12))
+title_label.grid(row=0, column=1, padx=(50, 10), pady=10)
 
 # Define the function to open the password generator file
 def open_password_generator():

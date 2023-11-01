@@ -8,17 +8,6 @@ def rot5(text):
     rot5_trans = str.maketrans(string.digits, '5678901234')
     return text.translate(rot5_trans)
 
-def rot7(text):
-    rot7_trans = str.maketrans(string.digits, '7890123456')
-    return text.translate(rot7_trans)
-
-def rot9(text):
-    rot9_trans = str.maketrans(
-        "ABCDEFGHIJKLMabcdefghijklmNOPQRSTUVWXYZnopqrstuvwxyz", 
-        "JKLMNOPQRStuvwxijklmnopqrstUVWXYZabcdefghiABCDEFGHyz"
-    )
-    return text.translate(rot9_trans)
-
 def rot13(text):
     rot13_trans = str.maketrans(
         "ABCDEFGHIJKLMabcdefghijklmNOPQRSTUVWXYZnopqrstuvwxyz", 
@@ -29,14 +18,10 @@ def rot13(text):
 def reverse_rot5(text):
     return rot5(text)  # ROT5 is its own inverse
 
-def reverse_rot7(text):
-    return rot7(rot7(text))  # Applying ROT7 twice will revert the string back
-
-def reverse_rot9(text):
-    return rot9(text)  # ROT9 is its own inverse
 
 def reverse_rot13(text):
     return rot13(text)  # ROT13 is its own inverse
+
 
 class UserCredentials:
     def __init__(self, root):
@@ -84,7 +69,7 @@ class UserCredentials:
             encoded_text = f.read()
 
         # Decode the text
-        decoded_text = reverse_rot9(reverse_rot5(reverse_rot7(reverse_rot13(encoded_text))))
+        decoded_text = reverse_rot5(reverse_rot13(encoded_text))
 
         # Delete the encoded file
         os.remove(filepath)
@@ -102,10 +87,9 @@ class UserCredentials:
 
     def save_credentials(self):
             with open(self.filename, 'a') as f:
-                f.write(rot9(rot13(rot7(rot5(f'\n\nApplication: {self.app_entry.get()}\nUsername: {self.username_entry.get()}\nPassword: {self.password_entry.get()}')))))
+                f.write(rot13(rot5(f'\n\nApplication: {self.app_entry.get()}\nUsername: {self.username_entry.get()}\nPassword: {self.password_entry.get()}')))
             messagebox.showinfo("Success", "Credentials saved successfully on Desktop!")
             
-    
 
 def main():
     root = tk.Tk()
